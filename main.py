@@ -9,6 +9,11 @@ from unihiker import Audio
 from pinpong.board import Board, Pin
 from pinpong.extension.unihiker import *
 import time
+import logging
+
+# 配置日志
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # 设置音量的函数
 def set_volume(volume):
@@ -45,10 +50,14 @@ Board().begin()
 audio = Audio()
 
 # 初始化MQTT客户端并连接
-siot.init(client_id="32829411907149986", server="10.1.2.3", port=1883, user="siot", password="dfrobot")
-siot.connect()
-siot.loop()
-siot.subscribe(topic="siot/mess")
+try:
+    siot.init(client_id="32829411907149986", server="10.1.2.3", port=1883, user="siot", password="dfrobot")
+    siot.connect()
+    siot.loop()
+    siot.subscribe(topic="siot/mess")
+    logger.info("MQTT connection established successfully")
+except Exception as e:
+    logger.error(f"Failed to connect to MQTT server: {e}")
 
 # 初始化GPIO引脚
 pin_out = Pin(Pin.P22, Pin.OUT)
