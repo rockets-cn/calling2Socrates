@@ -49,7 +49,7 @@ FILE_PATHS = {
 AI_CONFIG = {
     "ollama": {
         "base_url": os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1"),
-        "model": os.getenv("OLLAMA_MODEL", "deepseek-v2")
+        "model": os.getenv("OLLAMA_MODEL", "qwen3.5:2b")
     },
     "deepseek": {
         "base_url": os.getenv("DEEPSEEK_BASE_URL", "https://api.deepseek.com"),

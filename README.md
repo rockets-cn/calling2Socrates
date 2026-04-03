@@ -9,6 +9,7 @@ A locally executed AI voice phone interaction project
 在开始使用本项目之前，请确保你的环境符合以下要求：
 - 请根据 requirements.txt 文件安装所需的Python依赖库。
 - 支持Python 3.8+。
+- 推荐使用 `uv` 管理虚拟环境和依赖。
 
 ## 硬件清单
 - LattePanda（可以用你的电脑代替）
@@ -24,26 +25,39 @@ A locally executed AI voice phone interaction project
    
   ```git clone https://github.com/DFRobot-AIGC/calling2Socrates.git```
 
-2. 创建虚拟环境（可选）
-建议使用conda虚拟环境来隔离项目的依赖库。你可以使用以下命令创建和激活虚拟环境：
-### 创建虚拟环境
-```conda create -n socrates python=3.12```
+2. 使用 `uv` 自动部署电脑端主程序：
+```bash
+bash scripts/deploy_uv.sh
+```
 
-### 激活虚拟环境
-```conda activate socrates```
+这个脚本会自动完成以下操作：
+- 创建 `.venv` 虚拟环境
+- 使用 `uv` 安装 `requirements.txt` 中的依赖
+- 如果 `.env` 不存在，则从 `.env.example` 自动生成
+- 如果本机已安装 `ollama`，自动拉取 `.env` 中配置的模型，默认是 `qwen3.5:2b`
 
-3. 进入项目目录并安装依赖：
-```pip install -r requirements.txt```
-
-4. 配置环境变量（可选）：
+3. 配置环境变量（可选）：
 将 `.env.example` 文件复制为 `.env` 并根据需要修改其中的配置项：
 ```
 cp .env.example .env
 ```
 然后编辑 `.env` 文件，设置你的API密钥和其他配置项。
 
-5. 运行主程序 chat.py：
-```python chat.py```
+4. 激活虚拟环境并运行主程序 chat.py：
+```bash
+source .venv/bin/activate
+python chat.py
+```
+
+### 手动使用 uv（可选）
+如果你不想使用自动部署脚本，也可以手动执行：
+```bash
+uv venv .venv --python 3.12
+uv pip install --python .venv/bin/python -r requirements.txt
+cp .env.example .env
+source .venv/bin/activate
+python chat.py
+```
 
 ## 行空板上的程序
 1. 将 main.py 上传到行空板并运行。
