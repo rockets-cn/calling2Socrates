@@ -124,6 +124,16 @@ while True:
         communication_flag = 9
         call_flag = 1
 
+    # 电脑端生成回答后，会通过 siot/mess 发送 3。
+    # 这里需要回发 siot/sys=3 才能触发 chat.py 播放本轮回答。
+    if communication_flag == 3:
+        button_call.config(state="disable")
+        button_continue.config(state="normal")
+        text_status.config(text="对话中")
+        siot.publish_save(topic="siot/sys", data="3")
+        communication_flag = 99
+        call_flag = 1
+
     # 如果通信标志为6，表示接收到来电
     if communication_flag == 6:
         time.sleep(1)

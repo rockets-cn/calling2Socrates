@@ -31,6 +31,7 @@ except Exception as e:
 # 初始化全局变量
 model_type = AUDIO_CONFIG['whisper_model_type']
 duration = AUDIO_CONFIG['record_duration']
+output_path = FILE_PATHS['audio_files']['idle']
 
 # 确保输出目录存在
 os.makedirs(FILE_PATHS['outputs_dir'], exist_ok=True)
@@ -274,34 +275,30 @@ while True:
             except Exception as e:
                 logger.error(f"Error in flag 1 processing: {e}")
 
-    if flag == 2:
-        # siot.publish_save(topic="siot/mess", data="2")  
-        audio=record_audio(10,"question.wav")
-        siot.publish_save(topic="siot/mess", data="2")  
-        speech_to_text=transcribe_audio(audio,model_type)
+        if flag == 2:
+            audio = record_audio(duration, FILE_PATHS['question_audio'])
+            siot.publish_save(topic="siot/mess", data="2")
+            speech_to_text = transcribe_audio(audio, model_type)
 
-        user_input = speech_to_text
-    
-        print("user question:"+user_input)
-        if is_connected():
-            output_path = text_to_speech_eageTTS(answer_the_question_deepseek(user_input))
-            print('网络已连接，执行edge-tts。')
-            # 在这里执行在线功能
-            # 使用edge-tts
-        else:
-            output_path = text_to_speech_sub(answer_the_question_ollama(user_input)) 
-        siot.publish_save(topic="siot/mess", data="3") 
-        flag =9
-        
-    if flag == 3:
-       # # subprocess.run(['aplay', output_path]) 
-        pygame.mixer.music.stop()
-        pygame.mixer.music.load(output_path)
-        # wait for 2 sec
-        time.sleep(2)
-        pygame.mixer.music.play()
-        flag =9
+            user_input = speech_to_text
+            print("user question:" + user_input)
+            if is_connected():
+                output_path = text_to_speech_eageTTS(answer_the_question_deepseek(user_input))
+                print('网络已连接，执行edge-tts。')
+            else:
+                output_path = text_to_speech_sub(answer_the_question_ollama(user_input))
+            siot.publish_save(topic="siot/mess", data="3")
+            flag = 9
 
+        if flag == 3:
+            pygame.mixer.music.stop()
+            pygame.mixer.music.load(output_path)
+            time.sleep(2)
+            pygame.mixer.music.play()
+            flag = 9
+    except Exception as e:
+        logger.error(f"Error in main loop: {e}")
+        time.sleep(0.1)
 
 
 
